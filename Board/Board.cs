@@ -9,5 +9,9 @@
             this.colums = colums;
             pieces = new Piece[lines, colums];
         }
+
+        public Piece piece(int line, int colums) {
+            return pieces[line, colums];
+        }
     }
 }

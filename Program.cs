@@ -6,14 +6,19 @@ namespace xadrez_console {
     internal class Program {
         static void Main(string[] args) {
             Board board = new Board(8, 8);
+            try {
+                board.insertPiece(new Tower(board, Color.Preta), new Position(0, 0));
+                board.insertPiece(new King(board, Color.Preta), new Position(0, 9));
+                board.insertPiece(new Tower(board, Color.Preta), new Position(1, 3));
+                board.insertPiece(new King(board, Color.Preta), new Position(2, 4));
 
-            board.insertPiece(new Tower(board, Color.Preta), new Position(0, 0));
-            board.insertPiece(new Tower(board, Color.Preta), new Position(1, 3));
-            board.insertPiece(new King(board, Color.Preta), new Position(2, 4));
+                Screen.printBoard(board);
 
-            Screen.printBoard(board);
-
-            Console.WriteLine();
+                Console.WriteLine();
+            } catch (BoardException e) {
+                Console.WriteLine("Error: " + e.Message);
+            }
+          
         }
     }
 }

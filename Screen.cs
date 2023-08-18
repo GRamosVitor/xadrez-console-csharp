@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
 using board;
+using chess;
 
 
 namespace xadrez_console {
@@ -22,8 +23,15 @@ namespace xadrez_console {
             Console.WriteLine("  a b c d e f g h");
         }
         
+        public static ChessPosition readChessPosition() {
+            string s = Console.ReadLine();
+            char coluna = s[0];
+            int linha = int.Parse(s[1] + "");
+            return new ChessPosition(coluna, linha);
+        }
+
         public static void printPiece(Piece piece) {
-            if(piece.color == Color.Branca) {
+            if(piece.color == Color.White) {
                 Console.Write(piece);
             }
             else {

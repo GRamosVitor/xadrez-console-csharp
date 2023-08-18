@@ -12,6 +12,9 @@
             this.moveQtt = 0;
         }
 
+        public void incrementMovimentQtt() { 
+            moveQtt = 1; 
+        }
 
 
     }

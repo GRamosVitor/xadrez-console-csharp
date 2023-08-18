@@ -26,6 +26,16 @@
             p.position = pos;
         }
 
+        public Piece removePiece(Position pos) {
+            if (piece(pos) == null) {
+                return null;
+            }
+            Piece aux = piece(pos);
+            aux.position = null;
+            pieces[pos.line, pos.colum] = null;
+            return aux;
+        }
+
         public bool pieceExistInPosition(Position pos) {
             validatePosition(pos);
             return piece(pos) != null;

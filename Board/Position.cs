@@ -3,9 +3,14 @@
         public int line { get; set; }
         public int colum { get; set; }
 
-        public Position(int linha, int coluna) {
-            this.line = linha;
-            this.colum = coluna;
+        public Position(int line, int colum) {
+            this.line = line;
+            this.colum = colum;
+        }
+
+        public void defineValues(int line, int colum) {
+            this.line = line;
+            this.colum = colum;
         }
 
         public override string ToString() {

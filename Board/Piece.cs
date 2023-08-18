@@ -1,5 +1,5 @@
 ﻿namespace board {
-    internal class Piece {
+    internal abstract class Piece {
         public Position position {  get; set; }
         public Color color { get; protected set; }
         public int moveQtt { get; protected set; }
@@ -16,6 +16,7 @@
             moveQtt = 1; 
         }
 
+        public abstract bool[,] possibleMovements();
 
     }
 }

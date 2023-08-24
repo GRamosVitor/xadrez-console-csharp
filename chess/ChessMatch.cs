@@ -5,8 +5,8 @@ namespace chess {
     internal class ChessMatch {
         
         public Board board { get; set; }
-        private int turn;
-        private Color currentPlayer;
+        public int turn { get; private set; }
+        public Color currentPlayer { get; private set; }
         public bool finished { get; set; }
 
         public ChessMatch() {
@@ -22,6 +22,38 @@ namespace chess {
             p.incrementMovimentQtt();
             Piece capturedPiece = board.removePiece(target);
             board.insertPiece(p, target);
+        }
+
+        public void performsMove(Position origin, Position target) {
+            performMovement(origin, target);
+            turn++;
+            changePlayer();
+        }
+
+        private void changePlayer() {
+            if (currentPlayer == Color.White) {
+            currentPlayer = Color.Black;
+            } else {
+                currentPlayer = Color.White;
+            }
+        }
+
+        public void validadeOriginPosition(Position pos) {
+            if (board.piece(pos) == null) {
+                throw new BoardException("There is no piece on chosen position");
+            }
+            if (currentPlayer != board.piece(pos).color) {
+                throw new BoardException("The chosen piece is not yours");
+            }
+            if (!board.piece(pos).possibleMovementsExist()) {
+                throw new BoardException("There are no possible movements for chosen piece");
+            }
+        }
+
+        public void validadeTargetPosition(Position origin, Position destiny) {
+            if (!board.piece(origin).canMoveTo(destiny)) {
+                throw new BoardException("Invalid target position");
+            }
         }
 
         private void insertPieces() {

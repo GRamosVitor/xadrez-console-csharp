@@ -12,11 +12,7 @@ namespace xadrez_console {
                 while (!match.finished) {
                     try {
                         Console.Clear();
-                        Screen.printBoard(match.board);
-                        Console.WriteLine();
-                        Console.WriteLine("Turn: " + match.turn);
-                        Console.WriteLine("Waiting for move: " + match.currentPlayer + " player");
-
+                        Screen.printMatch(match);
 
                         Console.Write("Origin: ");
                         Position origin = Screen.readChessPosition().toPosition();

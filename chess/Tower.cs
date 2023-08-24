@@ -37,7 +37,7 @@ namespace chess {
                 if (board.piece(pos) != null && board.piece(pos).color != color) {
                     break;
                 }
-                pos.line = pos.colum + 1;
+                pos.colum = pos.colum + 1;
             }
 
 

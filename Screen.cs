@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
+using System.Collections.Generic;
 using board;
 using chess;
 
@@ -7,6 +7,36 @@ using chess;
 namespace xadrez_console {
     internal class Screen {
 
+        public static void printMatch(ChessMatch match) {
+            printBoard(match.board);
+            Console.WriteLine();
+            printCapturedPieces(match);
+            Console.WriteLine();
+            Console.WriteLine("Turn: " + match.turn);
+            Console.WriteLine("Waiting for move: " + match.currentPlayer + " player");
+        }
+
+        public static void printCapturedPieces(ChessMatch match) {
+            Console.WriteLine("Captured pieces:");
+            Console.WriteLine("White pieces: ");
+            printSet(match.capturedPieces(Color.White));
+            Console.WriteLine();
+            Console.WriteLine("Black pieces:");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            printSet(match.capturedPieces(Color.Black));
+            Console.ForegroundColor = aux;
+            Console.WriteLine();
+        }
+
+        public static void printSet(HashSet<Piece> set) {
+            Console.Write("[");
+            foreach(Piece p in set) {
+                Console.Write(p + " ");
+            }
+            Console.Write("]");
+
+        }
         public static void printBoard(Board board) {
             for (int i = 0; i < board.lines; i++) {
                 Console.Write(8 - i + " ");
@@ -42,9 +72,9 @@ namespace xadrez_console {
 
         public static ChessPosition readChessPosition() {
             string s = Console.ReadLine();
-            char coluna = s[0];
-            int linha = int.Parse(s[1] + "");
-            return new ChessPosition(coluna, linha);
+            char colum = s[0];
+            int line = int.Parse(s[1] + "");
+            return new ChessPosition(colum, line);
         }
 
         public static void printPiece(Piece piece) {

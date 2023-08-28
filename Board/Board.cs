@@ -1,4 +1,6 @@
-﻿namespace board {
+﻿using xadrez_console;
+
+namespace board {
     internal class Board {
         public int lines { get; set; }
         public int colums { get; set; }

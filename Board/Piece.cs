@@ -18,6 +18,10 @@ namespace board {
             moveQtt = 1; 
         }
 
+        public void decreaseMovimentQtt() {
+            moveQtt -= 1;
+        }
+
         public abstract bool[,] possibleMovements();
 
         public bool possibleMovementsExist() {

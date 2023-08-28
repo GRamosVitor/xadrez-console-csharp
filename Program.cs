@@ -39,6 +39,9 @@ namespace xadrez_console {
                         Console.ReadLine();
                     }
                 }
+                Console.WriteLine("Match finished");
+                Console.ReadLine();
+
 
             } catch (BoardException e) {
                 Console.WriteLine("Error: " + e.Message);

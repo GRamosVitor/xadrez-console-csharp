@@ -1,13 +1,13 @@
 ﻿using board;
 
 namespace chess {
-    internal class King : Piece {
+    internal class Knight : Piece {
         
-        public King (Board board, Color color) : base (board, color) {
+        public Knight (Board board, Color color) : base (board, color) {
         }
 
         public override string ToString() {
-            return "K";
+            return "N";
         }
 
         private bool canMove(Position pos) {
@@ -19,51 +19,51 @@ namespace chess {
             bool[,] mat = new bool[board.lines, board.colums];
 
             Position pos = new Position(0, 0);
-        
-            //up movement
-            pos.defineValues(position.line - 1, position.colum);
+           
+            //left-up
+            pos.defineValues(position.line - 1, position.colum-2);
+            if(board.validPosition(pos) && canMove(pos) ) {
+                mat[pos.line, pos.colum] = true;
+            }
+
+            //up-left
+            pos.defineValues(position.line - 2, position.colum - 1);
             if (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
             }
 
-            //superior right diagonal movement
-            pos.defineValues(position.line - 1, position.colum + 1);
+            //right-up
+            pos.defineValues(position.line - 2, position.colum + 1);
             if (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
             }
 
-            //right position
-            pos.defineValues(position.line, position.colum + 1);
+            //up-right
+            pos.defineValues(position.line - 1, position.colum +2);
             if (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
             }
 
-            //inferior right diagonal movement
-            pos.defineValues(position.line + 1, position.colum + 1);
+            //left-down
+            pos.defineValues(position.line + 1, position.colum - 2);
             if (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
             }
 
-            //down movement
-            pos.defineValues(position.line + 1, position.colum);
+            //dowm-left
+            pos.defineValues(position.line + 2, position.colum - 1);
             if (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
             }
 
-            //inferior left diagonal movement
-            pos.defineValues(position.line + 1, position.colum - 1);
+            //left-up
+            pos.defineValues(position.line + 2, position.colum + 1);
             if (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
             }
 
-            //left movement
-            pos.defineValues(position.line, position.colum - 1);
-            if (board.validPosition(pos) && canMove(pos)) {
-                mat[pos.line, pos.colum] = true;
-            }
-
-            //superior left diagonal movement
-            pos.defineValues(position.line - 1, position.colum - 1);
+            //up-left
+            pos.defineValues(position.line + 1, position.colum + 2);
             if (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
             }

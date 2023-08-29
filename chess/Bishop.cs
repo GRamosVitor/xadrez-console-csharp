@@ -1,13 +1,13 @@
 ﻿using board;
 
 namespace chess {
-    internal class Tower : Piece {
-
-        public Tower(Board board, Color color) : base(board, color) {
+    internal class Bishop : Piece {
+        
+        public Bishop (Board board, Color color) : base (board, color) {
         }
 
         public override string ToString() {
-            return "T";
+            return "B";
         }
 
         private bool canMove(Position pos) {
@@ -19,48 +19,46 @@ namespace chess {
             bool[,] mat = new bool[board.lines, board.colums];
 
             Position pos = new Position(0, 0);
-
-            //up movement
-            pos.defineValues(position.line - 1, position.colum);
+        
+            //NO
+            pos.defineValues(position.line - 1, position.colum-1);
             while (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
                 if (board.piece(pos) != null && board.piece(pos).color != color) {
                     break;
                 }
-                pos.line = pos.line - 1;
+                pos.defineValues(pos.line - 1, pos.colum-1);
             }
 
-            //right position
-            pos.defineValues(position.line, position.colum + 1);
+            //NE
+            pos.defineValues(position.line - 1, position.colum + 1);
             while (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
                 if (board.piece(pos) != null && board.piece(pos).color != color) {
                     break;
                 }
-                pos.colum = pos.colum + 1;
+                pos.defineValues(pos.line - 1, pos.colum + 1);
             }
 
-
-            //down movement
-            pos.defineValues(position.line + 1, position.colum);
+            //SO
+            pos.defineValues(position.line + 1, position.colum - 1);
             while (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
                 if (board.piece(pos) != null && board.piece(pos).color != color) {
                     break;
                 }
-                pos.line = pos.line + 1;
+                pos.defineValues(pos.line + 1, pos.colum - 1);
             }
 
-            //left movement
-            pos.defineValues(position.line, position.colum - 1);
+            //SE
+            pos.defineValues(position.line + 1, position.colum + 1);
             while (board.validPosition(pos) && canMove(pos)) {
                 mat[pos.line, pos.colum] = true;
                 if (board.piece(pos) != null && board.piece(pos).color != color) {
                     break;
                 }
-                pos.colum = pos.colum - 1;
+                pos.defineValues(pos.line + 1, pos.colum + 1);
             }
-
             return mat;
         }
     }

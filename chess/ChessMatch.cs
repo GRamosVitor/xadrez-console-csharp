@@ -15,7 +15,8 @@ namespace chess {
         public bool finished { get; set; }
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
-        public bool check { get; private set; } 
+        public bool check { get; private set; }
+        public Piece enPassantVulnerable {  get; private set; }
 
         public ChessMatch() {
             board = new Board(8, 8);
@@ -26,6 +27,7 @@ namespace chess {
             captured = new HashSet<Piece>();
             insertPieces();
             check = false;
+            enPassantVulnerable = null;
         }
 
         public Piece doMovement (Position origin, Position target) {
@@ -36,17 +38,81 @@ namespace chess {
             if (capturedPiece != null) {
                 captured.Add(capturedPiece);
             }
+
+            //#special move small castle
+            if (p is King && target.colum == origin.colum + 2) {
+                Position rookOrigin = new Position(origin.line, origin.colum + 3);
+                Position rookTarget = new Position(origin.line, origin.colum + 1);
+                Piece R = board.removePiece(rookOrigin);
+                R.incrementMovimentQtt() ;
+                board.insertPiece(R, rookTarget);
+            }
+
+            //#special move small castle
+            if (p is King && target.colum == origin.colum -2) {
+                Position rookOrigin = new Position(origin.line, origin.colum - 4);
+                Position rookTarget = new Position(origin.line, origin.colum - 1);
+                Piece R = board.removePiece(rookOrigin);
+                R.incrementMovimentQtt();
+                board.insertPiece(R, rookTarget);
+            }
+
+            //#special move en passant
+            if(p is Pawn) {
+                if(origin.colum != target.colum && capturedPiece == null) {
+                    Position posPawn;
+                    if(p.color == Color.White) {
+                        posPawn = new Position(target.line + 1, target.colum);
+                    } else {
+                        posPawn = new Position(target.line - 1, target.colum);
+                    }
+                    capturedPiece = board.removePiece(posPawn);
+                    captured.Add(capturedPiece);
+                }
+            }
             return capturedPiece;
         }
 
         public void undoMovement(Position origin, Position target, Piece capturedPiece) {
             Piece p = board.removePiece(target);
             p.decreaseMovimentQtt();
-            if(capturedPiece != null) {
+            if (capturedPiece != null) {
                 board.insertPiece(capturedPiece, target);
                 captured.Remove(capturedPiece);
             }
             board.insertPiece(p, origin);
+
+            //#special move small castle
+            if (p is King && target.colum == origin.colum + 2) {
+                Position rookOrigin = new Position(origin.line, origin.colum + 3);
+                Position rookTarget = new Position(origin.line, origin.colum + 1);
+                Piece R = board.removePiece(rookTarget);
+                R.decreaseMovimentQtt();
+                board.insertPiece(R, rookOrigin);
+            }
+
+            //#special move small castle
+            if (p is King && target.colum == origin.colum - 2) {
+                Position rookOrigin = new Position(origin.line, origin.colum - 4);
+                Position rookTarget = new Position(origin.line, origin.colum - 1);
+                Piece R = board.removePiece(rookTarget);
+                R.decreaseMovimentQtt();
+                board.insertPiece(R, rookOrigin);
+            }
+
+            //#special move en passant
+            if(p is Pawn) {
+                if(target.colum != origin.colum && capturedPiece == enPassantVulnerable) {
+                    Piece pawn = board.removePiece(target);
+                    Position posPawn;
+                    if(p.color == Color.White) {
+                        posPawn = new Position(3, target.colum);
+                    } else {
+                        posPawn = new Position(4, target.colum);
+                    }
+                    board.insertPiece(pawn, posPawn);
+                }
+            }
         }
 
         public void performsMove(Position origin, Position target) {
@@ -65,6 +131,15 @@ namespace chess {
             }
             turn++;
             changePlayer();
+
+            Piece p = board.piece(target);
+
+            //specialmove En Passant
+            if (p is Pawn && (target.line == origin.line - 2 || target.line == origin.line + 2)) {
+                enPassantVulnerable = p;
+            } else {
+                enPassantVulnerable = null;
+            }
         }
 
         private void changePlayer() {
@@ -175,37 +250,37 @@ namespace chess {
         }
 
         private void insertPieces() {
-            insertNewPiece('a', 2, new Pawn(board, Color.White));
-            insertNewPiece('b', 2, new Pawn(board, Color.White));
-            insertNewPiece('c', 2, new Pawn(board, Color.White));
-            insertNewPiece('d', 2, new Pawn(board, Color.White));
-            insertNewPiece('e', 2, new Pawn(board, Color.White));
-            insertNewPiece('f', 2, new Pawn(board, Color.White));
-            insertNewPiece('g', 2, new Pawn(board, Color.White));
-            insertNewPiece('h', 2, new Pawn(board, Color.White));
+            insertNewPiece('a', 2, new Pawn(board, Color.White,this));
+            insertNewPiece('b', 2, new Pawn(board, Color.White, this));
+            insertNewPiece('c', 2, new Pawn(board, Color.White, this));
+            insertNewPiece('d', 2, new Pawn(board, Color.White, this));
+            insertNewPiece('e', 2, new Pawn(board, Color.White, this));
+            insertNewPiece('f', 2, new Pawn(board, Color.White, this));
+            insertNewPiece('g', 2, new Pawn(board, Color.White, this));
+            insertNewPiece('h', 2, new Pawn(board, Color.White, this));
             insertNewPiece('a', 1, new Rook(board, Color.White));
             insertNewPiece('b', 1, new Knight(board, Color.White));
             insertNewPiece('c', 1, new Bishop(board, Color.White));
-            insertNewPiece('d', 1, new King(board, Color.White));
-            insertNewPiece('e', 1, new Queen(board, Color.White));
+            insertNewPiece('d', 1, new Queen(board, Color.White));
+            insertNewPiece('e', 1, new King(board, Color.White, this));
             insertNewPiece('f', 1, new Bishop(board, Color.White));
             insertNewPiece('g', 1, new Knight(board, Color.White));
             insertNewPiece('h', 1, new Rook(board, Color.White));
 
 
-            insertNewPiece('a', 7, new Pawn(board, Color.Black));
-            insertNewPiece('b', 7, new Pawn(board, Color.Black));
-            insertNewPiece('c', 7, new Pawn(board, Color.Black));
-            insertNewPiece('d', 7, new Pawn(board, Color.Black));
-            insertNewPiece('e', 7, new Pawn(board, Color.Black));
-            insertNewPiece('f', 7, new Pawn(board, Color.Black));
-            insertNewPiece('g', 7, new Pawn(board, Color.Black));
-            insertNewPiece('h', 7, new Pawn(board, Color.Black));
+            insertNewPiece('a', 7, new Pawn(board, Color.Black, this));
+            insertNewPiece('b', 7, new Pawn(board, Color.Black, this));
+            insertNewPiece('c', 7, new Pawn(board, Color.Black, this));
+            insertNewPiece('d', 7, new Pawn(board, Color.Black, this));
+            insertNewPiece('e', 7, new Pawn(board, Color.Black, this));
+            insertNewPiece('f', 7, new Pawn(board, Color.Black, this));
+            insertNewPiece('g', 7, new Pawn(board, Color.Black, this));
+            insertNewPiece('h', 7, new Pawn(board, Color.Black, this));
             insertNewPiece('a', 8, new Rook(board, Color.Black));
             insertNewPiece('b', 8, new Knight(board, Color.Black));
             insertNewPiece('c', 8, new Bishop(board, Color.Black));
-            insertNewPiece('d', 8, new King(board, Color.Black));
-            insertNewPiece('e', 8, new Queen(board, Color.Black));
+            insertNewPiece('d', 8, new Queen(board, Color.Black));
+            insertNewPiece('e', 8, new King(board, Color.Black, this));
             insertNewPiece('f', 8, new Bishop(board, Color.Black));
             insertNewPiece('g', 8, new Knight(board, Color.Black));
             insertNewPiece('h', 8, new Rook(board, Color.Black));

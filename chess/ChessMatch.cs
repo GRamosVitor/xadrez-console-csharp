@@ -121,6 +121,21 @@ namespace chess {
                 undoMovement(origin, target, capturedPiece);
                 throw new BoardException("You cannot put yourself in check");
             }
+
+            Piece p = board.piece(target);
+
+            //#special move promotion
+            if( p is Pawn) {
+                if((p.color == Color.White && target.line == 0) || (p.color == Color.Black && target.line == 7)) {
+
+                    p = board.removePiece(target);
+                    pieces.Remove(p);
+                    Piece queen = new Queen(board, p.color);
+                    board.insertPiece(queen, target);
+                    pieces.Add(queen);
+                }
+            }
+
             if (isInCheck(oponnent(currentPlayer))) {
                 check = true;
             } else {
@@ -131,8 +146,6 @@ namespace chess {
             }
             turn++;
             changePlayer();
-
-            Piece p = board.piece(target);
 
             //specialmove En Passant
             if (p is Pawn && (target.line == origin.line - 2 || target.line == origin.line + 2)) {
@@ -250,6 +263,7 @@ namespace chess {
         }
 
         private void insertPieces() {
+
             insertNewPiece('a', 2, new Pawn(board, Color.White,this));
             insertNewPiece('b', 2, new Pawn(board, Color.White, this));
             insertNewPiece('c', 2, new Pawn(board, Color.White, this));
@@ -266,7 +280,6 @@ namespace chess {
             insertNewPiece('f', 1, new Bishop(board, Color.White));
             insertNewPiece('g', 1, new Knight(board, Color.White));
             insertNewPiece('h', 1, new Rook(board, Color.White));
-
 
             insertNewPiece('a', 7, new Pawn(board, Color.Black, this));
             insertNewPiece('b', 7, new Pawn(board, Color.Black, this));

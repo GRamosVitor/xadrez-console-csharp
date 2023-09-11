@@ -1,10 +1,11 @@
-﻿using System;
+﻿ using System;
 using board;
 using System.Collections.Generic;
 using System.Security.Policy;
 using System.Text.RegularExpressions;
 using xadrez_console;
 using xadrez_console.chess;
+using chess;
 
 namespace chess {
     internal class ChessMatch {
@@ -13,10 +14,11 @@ namespace chess {
         public int turn { get; private set; }
         public Color currentPlayer { get; private set; }
         public bool finished { get; set; }
+
         private HashSet<Piece> pieces;
         private HashSet<Piece> captured;
         public bool check { get; private set; }
-        public Piece enPassantVulnerable {  get; private set; }
+        public Piece enPassantVulnerable { get; private set; }
 
         public ChessMatch() {
             board = new Board(8, 8);
@@ -30,7 +32,7 @@ namespace chess {
             enPassantVulnerable = null;
         }
 
-        public Piece doMovement (Position origin, Position target) {
+        public Piece makeMove (Position origin, Position target) {
             Piece p = board.removePiece(origin);
             p.incrementMovimentQtt();
             Piece capturedPiece = board.removePiece(target);
@@ -73,7 +75,7 @@ namespace chess {
             return capturedPiece;
         }
 
-        public void undoMovement(Position origin, Position target, Piece capturedPiece) {
+        public void unmakeMove(Position origin, Position target, Piece capturedPiece) {
             Piece p = board.removePiece(target);
             p.decreaseMovimentQtt();
             if (capturedPiece != null) {
@@ -115,18 +117,19 @@ namespace chess {
             }
         }
 
-        public void performsMove(Position origin, Position target) {
-            Piece capturedPiece = doMovement(origin, target);
+        public void performsMovement(Position origin, Position target) {
+            Piece capturedPiece = makeMove(origin, target);
+
             if (isInCheck(currentPlayer)) {
-                undoMovement(origin, target, capturedPiece);
+                unmakeMove(origin, target, capturedPiece);
                 throw new BoardException("You cannot put yourself in check");
             }
 
             Piece p = board.piece(target);
 
             //#special move promotion
-            if( p is Pawn) {
-                if((p.color == Color.White && target.line == 0) || (p.color == Color.Black && target.line == 7)) {
+            if (p is Pawn) {
+                if ((p.color == Color.White && target.line == 0) || (p.color == Color.Black && target.line == 7)) {
 
                     p = board.removePiece(target);
                     pieces.Remove(p);
@@ -144,6 +147,7 @@ namespace chess {
             if (checkmateTest(oponnent(currentPlayer))) {
                 finished = true;
             }
+
             turn++;
             changePlayer();
 
@@ -226,9 +230,9 @@ namespace chess {
                         if (mat[i, j]) {
                             Position aux = new Position(i, j);
                             Position aux2 = new Position(x.position.line, x.position.colum); ;
-                            Piece capturedPiece = doMovement(x.position, aux);
+                            Piece capturedPiece = makeMove(x.position, aux);
                             bool checkTest = isInCheck(color);
-                            undoMovement(aux2, aux, capturedPiece);
+                            unmakeMove(aux2, aux, capturedPiece);
                             if (!checkTest) {
                                 return false;
                             }
@@ -264,7 +268,7 @@ namespace chess {
 
         private void insertPieces() {
 
-            insertNewPiece('a', 2, new Pawn(board, Color.White,this));
+            insertNewPiece('a', 2, new Pawn(board, Color.White, this));
             insertNewPiece('b', 2, new Pawn(board, Color.White, this));
             insertNewPiece('c', 2, new Pawn(board, Color.White, this));
             insertNewPiece('d', 2, new Pawn(board, Color.White, this));
@@ -301,3 +305,5 @@ namespace chess {
         }
     }
 }
+
+    

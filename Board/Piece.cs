@@ -43,6 +43,6 @@ namespace board {
             Piece p = board.piece(pos);
             return p == null || p.color != color;
         }
-
+         
     }
 }

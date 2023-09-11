@@ -29,7 +29,7 @@ namespace xadrez_console {
                         
                         match.validadeTargetPosition(origin, destiny);
 
-                        match.performsMove(origin, destiny);
+                        match.performsMovement(origin, destiny);
 
                         Screen.printBoard(match.board);
                         Console.WriteLine();
